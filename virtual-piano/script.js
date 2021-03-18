@@ -15,6 +15,8 @@ const notes =
 
 } 
 
+let isMouseDown = false;
+let currentTarget;
 
 const piano = document.querySelector(".piano");
 const pianoKeys = document.querySelectorAll(".piano-key, .piano-key sharp")
@@ -28,7 +30,10 @@ function playAudio (source)
     audio.play();
 }
 
-piano.addEventListener("click", (e) => {
+function mouseEventsHandler(e)
+{
+    isMouseDown = true;
+    currentTarget = e.target.dataset.letter;
     if(e.target.classList.value === "piano-key")
     {
         const note = e.target.dataset.note; 
@@ -38,11 +43,11 @@ piano.addEventListener("click", (e) => {
         const note = e.target.dataset.note[0] + "Sh"
         playAudio(notes[note])
     }   
-})
+}
 
-window.addEventListener("keydown", (event) => {
-        console.log(event.code)
-        switch (event.code)
+function keyboardEventHandler(event)
+{
+    switch (event.code)
     {
         case "KeyD":
             playAudio(notes["c"])
@@ -82,4 +87,34 @@ window.addEventListener("keydown", (event) => {
             break;  
         
     }
+}
+
+piano.addEventListener("mousedown", e => mouseEventsHandler(e))
+
+piano.addEventListener("mouseup", e => {
+    isMouseDown = false;
 })
+
+
+piano.addEventListener("mousemove", e =>{
+    if(isMouseDown)
+    {   
+        if(currentTarget != e.target.dataset.letter)
+        {
+            if(e.target.classList.value === "piano-key")
+            {
+            const note = e.target.dataset.note; 
+            playAudio(notes[note])
+            }
+            else if (e.target.classList.value === "piano-key sharp"){
+                const note = e.target.dataset.note[0] + "Sh"
+                playAudio(notes[note])
+            }
+            currentTarget = e.target.dataset.letter;
+        }
+        
+    }
+
+})
+
+window.addEventListener("keydown", (event) => keyboardEventHandler(event))   
