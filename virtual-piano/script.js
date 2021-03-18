@@ -15,12 +15,28 @@ const notes =
 
 } 
 
-let isMouseDown = false;
-let currentTarget;
-
 const piano = document.querySelector(".piano");
 const pianoKeys = document.querySelectorAll(".piano-key, .piano-key sharp")
+const statement = document.querySelector(".btn-container")
 
+let isMouseDown = false;
+let currentTarget;
+let currentStatement = statement.children[0].classList.length === 3 ? "Notes": "Letters";
+
+function changeStatement()
+{
+    let active;
+    let inActive;
+    for (let i = 0; i < 2; i++){
+        if(statement.children[i].classList.length == 3)
+        {
+            active = statement.children[i]
+            inActive = i === 0 ? statement.children[1] : statement.children[0]
+        }
+    }
+    active.classList.toggle("btn-active")
+    inActive.classList.toggle("btn-active")
+}
 
 function playAudio (source)
 {
@@ -89,12 +105,13 @@ function keyboardEventHandler(event)
     }
 }
 
+
+
 piano.addEventListener("mousedown", e => mouseEventsHandler(e))
 
 piano.addEventListener("mouseup", e => {
     isMouseDown = false;
 })
-
 
 piano.addEventListener("mousemove", e =>{
     if(isMouseDown)
@@ -118,3 +135,16 @@ piano.addEventListener("mousemove", e =>{
 })
 
 window.addEventListener("keydown", (event) => keyboardEventHandler(event))   
+
+statement.addEventListener("click", (e) =>{
+    console.log(currentStatement)
+    console.log(statement.children)
+    console.log(statement.children[0].classList)
+    if(e.target.textContent != currentStatement)
+    {
+        changeStatement()
+        currentStatement = e.target.textContent;
+        
+    }
+
+})
