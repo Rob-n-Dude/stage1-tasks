@@ -1,26 +1,29 @@
 const notes =
 {
-    a : "assets/audio/a.mp3",
-    aSh : "/assets/audio/a♯.mp3",
-    b : "assets/audio/b.mp3",
-    c : "assets/audio/c.mp3",
-    cSh : "assets/audio/c♯.mp3",
-    d : "assets/audio/d.mp3",
-    dSh : "assets/audio/d♯.mp3",
-    e : "assets/audio/e.mp3",
-    f : "assets/audio/f.mp3",
-    fSh : "assets/audio/f♯.mp3",
-    g : "assets/audio/g.mp3",
-    gSh : "assets/audio/g♯.mp3",
+    K : "assets/audio/a.mp3",
+    O : "/assets/audio/a♯.mp3",
+    L : "assets/audio/b.mp3",
+    D : "assets/audio/c.mp3",
+    R : "assets/audio/c♯.mp3",
+    F : "assets/audio/d.mp3",
+    T : "assets/audio/d♯.mp3",
+    G : "assets/audio/e.mp3",
+    H : "assets/audio/f.mp3",
+    U : "assets/audio/f♯.mp3",
+    J : "assets/audio/g.mp3",
+    I : "assets/audio/g♯.mp3",
 
 } 
+
+const lettersAll = ["D", "F", "G", "H", "J", "K", "L", "R", "T", undefined, "U", "I", "O"];
+const notesAll = ["c", "d", "e", "f", "g", "a", "b", "c♯", "d♯", undefined, "f♯", "g♯", "a♯"];
 
 const piano = document.querySelector(".piano");
 const pianoKeys = document.querySelectorAll(".piano-key, .piano-key sharp")
 const statement = document.querySelector(".btn-container")
 
 let isMouseDown = false;
-let currentTarget;
+let currentTarget = "Notes";
 let currentStatement = statement.children[0].classList.length === 3 ? "Notes": "Letters";
 
 function changeStatement()
@@ -38,6 +41,32 @@ function changeStatement()
     inActive.classList.toggle("btn-active")
 }
 
+function changeDiscription()
+{
+    if(currentStatement == "Notes")
+    {
+        for(let i = 0; i < pianoKeys.length; i++)
+        {
+            if(notesAll[i] != undefined)
+            {
+                pianoKeys[i].dataset.note = notesAll[i]
+            }
+            
+        }
+    }
+    else{
+        for(let i = 0; i < pianoKeys.length; i++)
+        {
+            if(lettersAll[i] != undefined)
+            {
+                pianoKeys[i].dataset.note = lettersAll[i]
+            }
+            
+        }
+        
+    }
+}
+
 function playAudio (source)
 {
     const audio = new Audio();
@@ -52,60 +81,21 @@ function mouseEventsHandler(e)
     currentTarget = e.target.dataset.letter;
     if(e.target.classList.value === "piano-key")
     {
-        const note = e.target.dataset.note; 
+        const note = e.target.dataset.letter; 
         playAudio(notes[note])
     }
     else if (e.target.classList.value === "piano-key sharp"){
-        const note = e.target.dataset.note[0] + "Sh"
+        const note = e.target.dataset.letter;
         playAudio(notes[note])
     }   
 }
 
-function keyboardEventHandler(event)
-{
-    switch (event.code)
-    {
-        case "KeyD":
-            playAudio(notes["c"])
-            break;  
-        case "KeyF":
-            playAudio(notes["d"])
-            break;  
-        case "KeyG":
-            playAudio(notes["e"])
-            break;  
-        case "KeyH":
-            playAudio(notes["f"])
-            break;  
-        case "KeyJ":
-            playAudio(notes["g"])
-            break;  
-        case "KeyK":
-            playAudio(notes["a"])
-            break;  
-        case "KeyL":
-            playAudio(notes["b"])
-            break;  
-        case "KeyR":
-            playAudio(notes["cSh"])
-            break;  
-        case "KeyT":
-            playAudio(notes["dSh"])
-            break;   
-        case "KeyU":
-            playAudio(notes["fSh"])
-            break;  
-        case "KeyI":
-            playAudio(notes["gSh"])
-            break;  
-        case "KeyO":
-            playAudio(notes["aSh"])
-            break;  
-        
+function keyboardEventHandler(event){
+    if(notes.hasOwnProperty(event.code[3])){
+        playAudio(notes[event.code[3]])
     }
+     
 }
-
-
 
 piano.addEventListener("mousedown", e => mouseEventsHandler(e))
 
@@ -120,11 +110,11 @@ piano.addEventListener("mousemove", e =>{
         {
             if(e.target.classList.value === "piano-key")
             {
-            const note = e.target.dataset.note; 
-            playAudio(notes[note])
+                const note = e.target.dataset.letter; 
+                playAudio(notes[note])
             }
             else if (e.target.classList.value === "piano-key sharp"){
-                const note = e.target.dataset.note[0] + "Sh"
+                const note = e.target.dataset.letter; 
                 playAudio(notes[note])
             }
             currentTarget = e.target.dataset.letter;
@@ -137,14 +127,12 @@ piano.addEventListener("mousemove", e =>{
 window.addEventListener("keydown", (event) => keyboardEventHandler(event))   
 
 statement.addEventListener("click", (e) =>{
-    console.log(currentStatement)
-    console.log(statement.children)
-    console.log(statement.children[0].classList)
     if(e.target.textContent != currentStatement)
     {
         changeStatement()
         currentStatement = e.target.textContent;
-        
+        changeDiscription()  
     }
 
 })
+
