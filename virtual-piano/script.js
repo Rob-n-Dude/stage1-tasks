@@ -23,8 +23,18 @@ const pianoKeys = document.querySelectorAll(".piano-key, .piano-key sharp")
 const statement = document.querySelector(".btn-container")
 
 let isMouseDown = false;
-let currentTarget = "Notes";
+let currentTarget = "";
 let currentStatement = statement.children[0].classList.length === 3 ? "Notes": "Letters";
+let currentMouseOverTarget = ""
+
+function refresh(pianoKeys)
+{
+    for (let elem of pianoKeys)
+    {
+        elem.classList.toggle("piano-key-active",false)
+        elem.classList.toggle("piano-key-active-pseudo",false)
+    }
+}
 
 function changeStatement()
 {
@@ -77,62 +87,67 @@ function playAudio (source)
 
 function mouseEventsHandler(e)
 {
-    isMouseDown = true;
-    currentTarget = e.target.dataset.letter;
-    if(e.target.classList.value === "piano-key")
+
+    if(e.target.classList[0] === "piano-key")
     {
         const note = e.target.dataset.letter; 
         playAudio(notes[note])
+        toggleClasses(e.target)
+        
     }
-    else if (e.target.classList.value === "piano-key sharp"){
-        const note = e.target.dataset.letter;
-        playAudio(notes[note])
-    }   
+}
+
+function MouseUpEventHandler(e)
+{
+    isMouseDown = false;
+    refresh(pianoKeys)
+}
+
+
+function toggleClasses(target)
+{
+    target.classList.toggle("piano-key-active")
+    target.classList.toggle("piano-key-active-pseudo")
 }
 
 function keyboardEventHandler(event){
-    if(notes.hasOwnProperty(event.code[3])){
+    if(notes.hasOwnProperty(event.code[3]) && event.repeat == false){
         playAudio(notes[event.code[event.code.length-1]])
     }
      
 }
 
-piano.addEventListener("mousedown", e => mouseEventsHandler(e))
-
-piano.addEventListener("mouseup", e => {
-    isMouseDown = false;
+piano.addEventListener("mousedown", e => {
+    isMouseDown = true;
+    currentTarget = e.target.dataset.letter;
+    currentEventTarget = e.target;
+    mouseEventsHandler(e)
 })
 
-piano.addEventListener("mouseout", e =>
-{
-    if(e.currentTarget.classList != "piano")
-    {
-        isMouseDown = false;
-    }
-})
-
-main.addEventListener("mousemove", e =>{
+main.addEventListener("mouseover", e =>{
+    
     if(isMouseDown)
     {   
-        if(currentTarget != e.target.dataset.letter)
+        if(e.target.classList[0] === "piano-key")
         {
-            if(e.target.classList.value === "piano-key")
+            if(currentTarget != e.target.dataset.letter)
             {
-                const note = e.target.dataset.letter; 
-                playAudio(notes[note])
-            }
-            else if (e.target.classList.value === "piano-key sharp"){
-                const note = e.target.dataset.letter; 
-                playAudio(notes[note])
-            }
-            currentTarget = e.target.dataset.letter;
-            if(e.target.classList[0] != "piano-key")
-            {
-               isMouseDown = false;
+                
+                mouseEventsHandler(e)
+                currentTarget = e.target.dataset.letter;
+    
+                toggleClasses(currentEventTarget)
+                currentEventTarget = e.target
+                lastRelatedTarget = e.relatedTarget
+
             }
         }
+        
+        
     }
 })
+
+window.addEventListener("mouseup", e => MouseUpEventHandler(e))
 
 window.addEventListener("keydown", (event) => keyboardEventHandler(event))   
 
@@ -145,4 +160,3 @@ statement.addEventListener("click", (e) =>{
     }
 
 })
-
