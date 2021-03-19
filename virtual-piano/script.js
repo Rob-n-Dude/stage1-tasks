@@ -14,10 +14,10 @@ const notes =
     I : "assets/audio/g♯.mp3",
 
 } 
-
 const lettersAll = ["D", "F", "G", "H", "J", "K", "L", "R", "T", undefined, "U", "I", "O"];
 const notesAll = ["c", "d", "e", "f", "g", "a", "b", "c♯", "d♯", undefined, "f♯", "g♯", "a♯"];
 
+const main = document.querySelector(".main")
 const piano = document.querySelector(".piano");
 const pianoKeys = document.querySelectorAll(".piano-key, .piano-key sharp")
 const statement = document.querySelector(".btn-container")
@@ -92,7 +92,7 @@ function mouseEventsHandler(e)
 
 function keyboardEventHandler(event){
     if(notes.hasOwnProperty(event.code[3])){
-        playAudio(notes[event.code[3]])
+        playAudio(notes[event.code[event.code.length-1]])
     }
      
 }
@@ -103,7 +103,15 @@ piano.addEventListener("mouseup", e => {
     isMouseDown = false;
 })
 
-piano.addEventListener("mousemove", e =>{
+piano.addEventListener("mouseout", e =>
+{
+    if(e.currentTarget.classList != "piano")
+    {
+        isMouseDown = false;
+    }
+})
+
+main.addEventListener("mousemove", e =>{
     if(isMouseDown)
     {   
         if(currentTarget != e.target.dataset.letter)
@@ -118,10 +126,12 @@ piano.addEventListener("mousemove", e =>{
                 playAudio(notes[note])
             }
             currentTarget = e.target.dataset.letter;
+            if(e.target.classList[0] != "piano-key")
+            {
+               isMouseDown = false;
+            }
         }
-        
     }
-
 })
 
 window.addEventListener("keydown", (event) => keyboardEventHandler(event))   
