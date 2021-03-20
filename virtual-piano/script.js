@@ -191,4 +191,3 @@ statement.addEventListener("click", (e) =>{
 })
 
 fullScreenbutton.addEventListener("click", (e) => toggleFullScreen())
-
