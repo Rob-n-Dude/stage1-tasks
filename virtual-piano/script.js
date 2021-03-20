@@ -21,6 +21,7 @@ const main = document.querySelector(".main")
 const piano = document.querySelector(".piano");
 const pianoKeys = document.querySelectorAll(".piano-key, .piano-key sharp")
 const statement = document.querySelector(".btn-container")
+const fullScreenbutton = document.querySelector(".fullscreen") 
 
 let isMouseDown = false;
 let currentTarget = "";
@@ -127,6 +128,19 @@ function keyboardEventHandler(event){
     } 
 }
 
+function toggleFullScreen() {
+    if (!document.fullscreenElement) 
+    {
+        document.documentElement.requestFullscreen();
+    } 
+    else {
+      if (document.exitFullscreen) 
+      {
+        document.exitFullscreen();
+      }
+    }
+  }
+
 piano.addEventListener("mousedown", e => {
     isMouseDown = true;
     currentTarget = e.target.dataset.letter;
@@ -175,3 +189,6 @@ statement.addEventListener("click", (e) =>{
     }
 
 })
+
+fullScreenbutton.addEventListener("click", (e) => toggleFullScreen())
+
