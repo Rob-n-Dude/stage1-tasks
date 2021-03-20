@@ -103,18 +103,28 @@ function MouseUpEventHandler(e)
     refresh(pianoKeys)
 }
 
-
 function toggleClasses(target)
 {
     target.classList.toggle("piano-key-active")
     target.classList.toggle("piano-key-active-pseudo")
 }
 
+function choosePianoKey(letter)
+{
+    for(let key of pianoKeys)
+    {
+        if(key.dataset.letter == letter)
+        {
+            return key
+        }
+    }
+}
+
 function keyboardEventHandler(event){
     if(notes.hasOwnProperty(event.code[3]) && event.repeat == false){
         playAudio(notes[event.code[event.code.length-1]])
-    }
-     
+        toggleClasses(choosePianoKey(event.code[event.code.length-1]))
+    } 
 }
 
 piano.addEventListener("mousedown", e => {
@@ -150,6 +160,11 @@ main.addEventListener("mouseover", e =>{
 window.addEventListener("mouseup", e => MouseUpEventHandler(e))
 
 window.addEventListener("keydown", (event) => keyboardEventHandler(event))   
+window.addEventListener('keyup', (event) =>{
+    if(notes.hasOwnProperty(event.code[3]) && event.repeat == false){
+        toggleClasses(choosePianoKey(event.code[event.code.length-1]))
+    } 
+})
 
 statement.addEventListener("click", (e) =>{
     if(e.target.textContent != currentStatement)
