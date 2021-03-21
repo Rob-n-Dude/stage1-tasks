@@ -8,6 +8,7 @@ const defaultFilters = {
 
 const filters = document.querySelector('.filters');
 const resetButton = document.querySelector(".btn-reset")
+const fullScreenButton = document.querySelector(".fullscreen")
 
 let isMouseDown = false;
 
@@ -43,6 +44,18 @@ function resetFilters()
     }
 }
 
+function toggleFullScreen() {
+    if (!document.fullscreenElement) 
+    {
+        document.documentElement.requestFullscreen();
+    } 
+    else {
+      if (document.exitFullscreen) 
+      {
+        document.exitFullscreen();
+      }
+    }
+  }
 
 window.addEventListener('mousedown', e => isMouseDown = true)
 window.addEventListener("mouseup", e => isMouseDown = false)
@@ -50,3 +63,5 @@ window.addEventListener("mouseup", e => isMouseDown = false)
 filters.addEventListener("mousemove", e=> inputHandler(e))
 
 resetButton.addEventListener("click", e => resetFilters())
+
+fullScreenButton.addEventListener("click", e=> toggleFullScreen())
