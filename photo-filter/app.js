@@ -69,6 +69,11 @@ function toggleFullScreen() {
     }
   }
 
+function toggleButton(button){
+    button.disabled = button.disabled == true ? false :true
+    button.classList.toggle("btn-active")
+}
+
 function getImg()
 {
     let source = base; 
@@ -94,8 +99,8 @@ function getImg()
     source += images[index];
     viewBgImage(source)
     imgIndex += 1;
-    nextPicture.disabled = true;
-    setTimeout(() => nextPicture.disabled = false, 1000)
+    toggleButton(nextPicture)
+    //setTimeout(() => nextPicture.disabled = false, 1000)
 }
 
 function viewBgImage(src) 
@@ -104,6 +109,7 @@ function viewBgImage(src)
     img.src = src;
     img.onload = () => {      
        image.src = src;
+       toggleButton(nextPicture)
     }; 
 }
 
