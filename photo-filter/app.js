@@ -19,36 +19,28 @@ const resetButton = document.querySelector(".btn-reset")
 const fullScreenButton = document.querySelector(".fullscreen")
 const image = document.querySelector("img[alt=image]");
 const nextPicture = document.querySelector(".btn-next")
+const loadPicture = document.querySelector("#btnInput")
 
-
-
-let isMouseDown = false;
 
 function inputHandler(e)
 {
-    if(isMouseDown)
-    {
-        if(e.target.type === "range")
+        if(e.target.type == "range")
         {
             const suff = e.target.dataset.sizing;
             const output = e.target.parentNode.childNodes[3];
             output.value = e.target.value;
             document.documentElement.style.setProperty(`--${e.target.name}`,output.value + suff)
-        }
-    }
-    
+        }  
 }
 
 function resetFilters()
 {
-    
     for (let filter of filters.childNodes)
     {
         if(filter.nodeName == "LABEL"){
             filter.childNodes[1].value = defaultFilters[`--${filter.childNodes[1].name}`][0]
             filter.childNodes[3].value = defaultFilters[`--${filter.childNodes[1].name}`][0]
         }
-
     }
     for (let prop in defaultFilters)
     {
@@ -67,7 +59,7 @@ function toggleFullScreen() {
         document.exitFullscreen();
       }
     }
-  }
+}
 
 function toggleButton(button){
     button.disabled = button.disabled == true ? false :true
@@ -77,7 +69,6 @@ function toggleButton(button){
 function getImg()
 {
     let source = base; 
-
     const now = new Date();
 
     if(now.getHours >= 6 && now.getHours <= 11)
@@ -100,7 +91,6 @@ function getImg()
     viewBgImage(source)
     imgIndex += 1;
     toggleButton(nextPicture)
-    //setTimeout(() => nextPicture.disabled = false, 1000)
 }
 
 function viewBgImage(src) 
@@ -113,16 +103,29 @@ function viewBgImage(src)
     }; 
 }
 
+function loadImage ()
+{
+    const file = loadPicture.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+        image.src = reader.result;
+    }
+    reader.readAsDataURL(file)  
+}
 
-window.addEventListener('mousedown', e => isMouseDown = true)
-window.addEventListener("mouseup", e => isMouseDown = false)
 
+filters.addEventListener("change", e => inputHandler(e))
 filters.addEventListener("mousemove", e=> inputHandler(e))
 
 resetButton.addEventListener("click", e => resetFilters())
 
 fullScreenButton.addEventListener("click", e=> toggleFullScreen());
 
-nextPicture.addEventListener("click",e=> getImg())
+nextPicture.addEventListener("click",e=> {
+    getImg()
+    resetFilters();
 
-console.log(1 % images.length)
+});
+
+loadPicture.addEventListener("change", e => loadImage())
+
